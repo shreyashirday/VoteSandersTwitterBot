@@ -10,6 +10,7 @@ type Configuration struct {
 	ConsumerSecret string
 	AccessToken    string
 	AccessKey      string
+	MetamindKey    string
 }
 
 func getConfig(fileName string) (Configuration, error) {
