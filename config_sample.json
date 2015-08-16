@@ -1,6 +1,6 @@
 {
 	"ConsumerKey" : "Your Consumer Key here",
 	"ConsumerSecret" : "Your Consumer Secret Here",
-  "AccessToken" : "Your Access Token Here",
+  	"AccessToken" : "Your Access Token Here",
 	"AccessKey" : "Your Access Secret Here"
 }
