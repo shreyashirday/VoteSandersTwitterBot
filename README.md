@@ -9,7 +9,6 @@ This is a simle TwitterBot written in Go utilizing the [ananconda]("http://www.g
 * More Advanced Sentiment Analysis on tweets
 * Include more issues
 * Diversify Responses
-* Run Continuously on a server (Rapsberry Pi?)
 * More
 
 ## Contributing
