@@ -12,10 +12,10 @@ import (
 
 func main() {
 
-	runtime.GOMAXPROCS(2)
+	runtime.GOMAXPROCS(3)
 
 	var wg sync.WaitGroup
-	wg.Add(2)
+	wg.Add(3)
 
 	configuration, err := getConfig("config.json")
 	if err != nil {
@@ -132,6 +132,58 @@ func main() {
 					tweet := tweets[i]
 					username := tweet.User.ScreenName
 					message := "@" + username + " You should vote for Bernie Sanders! He supports Women's Rights!"
+					twitterClient.tweet(tweet.IdStr, message)
+					twitterClient.retweet(tweet.Id)
+				}
+
+			}
+
+		}
+
+	}()
+
+	go func() {
+
+		defer wg.Done()
+
+		results := twitterClient.Search("Racial Inequality")
+		tweets := results.Statuses
+		for i := 0; i < len(tweets); i++ {
+			tweet := tweets[i]
+			retweeted := tweet.Retweeted
+			if !retweeted {
+
+				username := tweet.User.ScreenName
+				fmt.Println(username + " : " + tweet.Text + "\n")
+
+				go metamind.GetSentiment(metamindClient, tweet.Text, sentiments)
+			}
+		}
+
+		for i := 0; i < len(tweets); i++ {
+
+			r := <-sentiments
+			if r.Success {
+				predictions := r.Prediction.Predictions
+				var posValue float32
+				var neuValue float32
+				var negValue float32
+
+				for i := 0; i < len(predictions); i++ {
+					pred := predictions[i]
+					if strings.EqualFold(pred.ClassName, "positive") {
+						posValue = pred.Prob
+					} else if strings.EqualFold(pred.ClassName, "negative") {
+						negValue = pred.Prob
+					} else {
+						neuValue = pred.Prob
+					}
+				}
+
+				if posValue > negValue && neuValue > negValue {
+					tweet := tweets[i]
+					username := tweet.User.ScreenName
+					message := "@" + username + " You should vote for Bernie Sanders! He supports getting rid of Racial Inequality!"
 					twitterClient.tweet(tweet.IdStr, message)
 					twitterClient.retweet(tweet.Id)
 				}
